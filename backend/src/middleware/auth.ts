@@ -49,4 +49,24 @@ export const authenticateUser = async (
     console.error('Auth error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+};
+
+// Alias for backward compatibility
+export const authenticateToken = authenticateUser;
+
+// Admin role requirement middleware
+export const requireAdmin = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+
+  next();
 }; 

@@ -4,6 +4,10 @@ import { useState } from 'react';
 import MainLayout from '@/components/layout/main-layout';
 import Button from '@/components/ui/button';
 import Modal from '@/components/ui/modal';
+import AISidebar from '@/components/ai/ai-sidebar';
+import WinLossAnalysis from '@/components/ai/win-loss-analysis';
+import AutoTriggerNotifications from '@/components/ai/auto-trigger-notifications';
+import { useAutoTrigger } from '@/hooks/useAutoTrigger';
 
 // Mock data
 const mockDeals = [
@@ -53,6 +57,20 @@ const mockDeals = [
   }
 ];
 
+// Mock contact data for AI features
+const mockContactData = {
+  id: 1,
+  name: 'John Smith',
+  role: 'CTO',
+  company: 'Acme Corp',
+  email: 'john.smith@acme.com',
+  notes: 'Technical decision maker, prefers data-driven solutions',
+  activities: [
+    { type: 'email', content: 'Discussed technical requirements' },
+    { type: 'call', content: 'Demo scheduled for next week' }
+  ]
+};
+
 const stages = [
   { name: 'Prospecting', color: 'bg-gray-100' },
   { name: 'Qualification', color: 'bg-blue-100' },
@@ -67,6 +85,22 @@ export default function DealsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
+  const [showAISidebar, setShowAISidebar] = useState(false);
+  const [aiDeal, setAIDeal] = useState<any>(null);
+  const [showWinLossModal, setShowWinLossModal] = useState(false);
+
+  // Auto-trigger for the currently focused deal (first deal as example)
+  const autoTrigger = useAutoTrigger(
+    deals[0], // Use first deal for demo, in real app this would be the selected/viewed deal
+    mockContactData,
+    {
+      enabled: true,
+      inactivityDelay: 15000, // 15 seconds for demo (normally 30s)
+      dealCoachingEnabled: true,
+      personaEnabled: true,
+      triggerOnDealChange: true
+    }
+  );
 
   const handleEditDeal = (deal: any) => {
     setSelectedDeal(deal);
@@ -76,6 +110,16 @@ export default function DealsPage() {
   const handleAddDeal = () => {
     setSelectedDeal(null);
     setIsModalOpen(true);
+  };
+
+  const handleShowAI = (deal: any) => {
+    setAIDeal(deal);
+    setShowAISidebar(true);
+  };
+
+  const handleShowWinLoss = (deal: any) => {
+    setAIDeal(deal);
+    setShowWinLossModal(true);
   };
 
   const getDealsForStage = (stageName: string) => {
@@ -92,104 +136,223 @@ export default function DealsPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Sales Pipeline</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              Track and manage your sales opportunities
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
-            {/* View Toggle */}
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode('kanban')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'kanban'
-                    ? 'bg-white text-gray-900 shadow'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Kanban
-              </button>
-              <button
-                onClick={() => setViewMode('table')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'table'
-                    ? 'bg-white text-gray-900 shadow'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Table
-              </button>
+      {/* Auto-trigger notifications */}
+      <AutoTriggerNotifications
+        suggestions={autoTrigger.suggestions}
+        onDismiss={autoTrigger.dismissSuggestions}
+        onExecute={autoTrigger.executeSuggestion}
+        isTriggering={autoTrigger.isTriggering}
+      />
+
+      <div className="flex h-screen">
+        {/* Main Content */}
+        <div className={`flex-1 ${showAISidebar ? 'mr-96' : ''} transition-all duration-300`}>
+          <div className="p-6 space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Sales Pipeline</h1>
+                <p className="mt-1 text-sm text-gray-500">
+                  Track and manage your sales opportunities with AI insights
+                  {autoTrigger.config.enabled && (
+                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800">
+                      🤖 AI Auto-suggestions ON
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                {/* View Toggle */}
+                <div className="flex bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('kanban')}
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                      viewMode === 'kanban'
+                        ? 'bg-white text-gray-900 shadow'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Kanban
+                  </button>
+                  <button
+                    onClick={() => setViewMode('table')}
+                    className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                      viewMode === 'table'
+                        ? 'bg-white text-gray-900 shadow'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Table
+                  </button>
+                </div>
+                <Button onClick={handleAddDeal}>
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Add Deal
+                </Button>
+              </div>
             </div>
-            <Button onClick={handleAddDeal}>
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Add Deal
-            </Button>
-          </div>
-        </div>
 
-        {/* Pipeline Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Total Pipeline Value</h3>
-            <p className="text-3xl font-bold text-blue-600 mt-2">
-              ${deals.reduce((sum, deal) => sum + parseFloat(deal.value.replace('$', '').replace(',', '')), 0).toLocaleString()}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Active Deals</h3>
-            <p className="text-3xl font-bold text-green-600 mt-2">{deals.length}</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Avg Deal Size</h3>
-            <p className="text-3xl font-bold text-purple-600 mt-2">
-              ${Math.round(deals.reduce((sum, deal) => sum + parseFloat(deal.value.replace('$', '').replace(',', '')), 0) / deals.length).toLocaleString()}
-            </p>
-          </div>
-        </div>
+            {/* Pipeline Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900">Total Pipeline Value</h3>
+                <p className="text-3xl font-bold text-blue-600 mt-2">
+                  ${deals.reduce((sum, deal) => sum + parseFloat(deal.value.replace('$', '').replace(',', '')), 0).toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900">Active Deals</h3>
+                <p className="text-3xl font-bold text-green-600 mt-2">{deals.length}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900">Avg Deal Size</h3>
+                <p className="text-3xl font-bold text-purple-600 mt-2">
+                  ${Math.round(deals.reduce((sum, deal) => sum + parseFloat(deal.value.replace('$', '').replace(',', '')), 0) / deals.length).toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="text-lg font-semibold text-gray-900">AI Suggestions</h3>
+                <div className="flex items-center mt-2">
+                  <p className="text-3xl font-bold text-orange-600 mr-2">{autoTrigger.suggestions.length}</p>
+                  {autoTrigger.isTriggering && (
+                    <div className="animate-spin w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full"></div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        {/* Kanban Board */}
-        {viewMode === 'kanban' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-6">
-              <div className="flex space-x-6 overflow-x-auto pb-4">
-                {stages.map((stage) => (
-                  <div key={stage.name} className="flex-shrink-0 w-80">
-                    <div className={`${stage.color} rounded-lg p-4 mb-4`}>
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-semibold text-gray-900">{stage.name}</h3>
-                        <span className="text-sm text-gray-600">
-                          {getDealsForStage(stage.name).length} deals
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        ${getTotalValue(stage.name).toLocaleString()}
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {getDealsForStage(stage.name).map((deal) => (
-                        <div
-                          key={deal.id}
-                          className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                          onClick={() => handleEditDeal(deal)}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium text-gray-900 text-sm">{deal.title}</h4>
-                            <span className="text-lg font-bold text-green-600">{deal.value}</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">{deal.company}</p>
-                          <p className="text-xs text-gray-500 mb-3">{deal.description}</p>
+            {/* Kanban Board */}
+            {viewMode === 'kanban' && (
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="p-6">
+                  <div className="flex space-x-6 overflow-x-auto pb-4">
+                    {stages.map((stage) => (
+                      <div key={stage.name} className="flex-shrink-0 w-80">
+                        <div className={`${stage.color} rounded-lg p-4 mb-4`}>
                           <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-500">
-                              Close: {deal.closeDate}
+                            <h3 className="font-semibold text-gray-900">{stage.name}</h3>
+                            <span className="text-sm text-gray-600">
+                              {getDealsForStage(stage.name).length} deals
                             </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1">
+                            ${getTotalValue(stage.name).toLocaleString()}
+                          </p>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {getDealsForStage(stage.name).map((deal) => (
+                            <div
+                              key={deal.id}
+                              className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-medium text-gray-900 text-sm">{deal.title}</h4>
+                                <span className="text-lg font-bold text-green-600">{deal.value}</span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">{deal.company}</p>
+                              <p className="text-xs text-gray-500 mb-3">{deal.description}</p>
+                              <div className="flex justify-between items-center mb-3">
+                                <span className="text-xs text-gray-500">
+                                  Close: {deal.closeDate}
+                                </span>
+                                <div className="flex items-center">
+                                  <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div
+                                      className="bg-blue-600 h-2 rounded-full"
+                                      style={{ width: `${deal.probability}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className="text-xs text-gray-600">{deal.probability}%</span>
+                                </div>
+                              </div>
+                              
+                              {/* AI Action Buttons */}
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => handleShowAI(deal)}
+                                  className="flex-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded hover:bg-blue-200 transition-colors"
+                                >
+                                  🤖 AI Coach
+                                </button>
+                                <button
+                                  onClick={() => handleEditDeal(deal)}
+                                  className="flex-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors"
+                                >
+                                  Edit
+                                </button>
+                                {(deal.stage === 'Closed Won' || deal.stage === 'Closed Lost') && (
+                                  <button
+                                    onClick={() => handleShowWinLoss(deal)}
+                                    className="flex-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded hover:bg-purple-200 transition-colors"
+                                  >
+                                    📊 Analysis
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Table View */}
+            {viewMode === 'table' && (
+              <div className="bg-white shadow rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Deal
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Company
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Stage
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Value
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Probability
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Close Date
+                        </th>
+                        <th className="relative px-6 py-3">
+                          <span className="sr-only">Actions</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {deals.map((deal) => (
+                        <tr key={deal.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{deal.title}</div>
+                              <div className="text-sm text-gray-500">{deal.contact}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {deal.company}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                              {deal.stage}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {deal.value}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                 <div
@@ -197,116 +360,69 @@ export default function DealsPage() {
                                   style={{ width: `${deal.probability}%` }}
                                 ></div>
                               </div>
-                              <span className="text-xs text-gray-600">{deal.probability}%</span>
+                              <span className="text-sm text-gray-600">{deal.probability}%</span>
                             </div>
-                          </div>
-                        </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {deal.closeDate}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <button
+                              onClick={() => handleShowAI(deal)}
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              🤖 AI
+                            </button>
+                            <button
+                              onClick={() => handleEditDeal(deal)}
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
                       ))}
-                    </div>
-                  </div>
-                ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            )}
+          </div>
+        </div>
+
+        {/* AI Sidebar */}
+        {showAISidebar && aiDeal && (
+          <div className="fixed right-0 top-0 h-full z-50">
+            <AISidebar
+              dealData={aiDeal}
+              contactData={mockContactData}
+              onClose={() => setShowAISidebar(false)}
+            />
           </div>
         )}
-
-        {/* Table View */}
-        {viewMode === 'table' && (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Deal
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Company
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Stage
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Value
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Probability
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Close Date
-                    </th>
-                    <th className="relative px-6 py-3">
-                      <span className="sr-only">Actions</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {deals.map((deal) => (
-                    <tr key={deal.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{deal.title}</div>
-                          <div className="text-sm text-gray-500">{deal.contact}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {deal.company}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                          {deal.stage}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        {deal.value}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                            <div
-                              className="bg-blue-600 h-2 rounded-full"
-                              style={{ width: `${deal.probability}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-gray-600">{deal.probability}%</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {deal.closeDate}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => handleEditDeal(deal)}
-                          className="text-blue-600 hover:text-blue-900 mr-4"
-                        >
-                          Edit
-                        </button>
-                        <button className="text-red-600 hover:text-red-900">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Deal Modal */}
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title={selectedDeal ? 'Edit Deal' : 'Add New Deal'}
-          size="lg"
-        >
-          <DealForm
-            deal={selectedDeal}
-            onSave={() => setIsModalOpen(false)}
-            onCancel={() => setIsModalOpen(false)}
-          />
-        </Modal>
       </div>
+
+      {/* Deal Form Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedDeal ? 'Edit Deal' : 'Add New Deal'}
+      >
+        <DealForm
+          deal={selectedDeal}
+          onSave={() => setIsModalOpen(false)}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+
+      {/* Win-Loss Analysis Modal */}
+      {showWinLossModal && aiDeal && (
+        <WinLossAnalysis
+          dealData={aiDeal}
+          isOpen={showWinLossModal}
+          onClose={() => setShowWinLossModal(false)}
+        />
+      )}
     </MainLayout>
   );
 }
