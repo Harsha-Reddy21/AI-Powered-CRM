@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+
+// Load environment variables first
+dotenv.config();
+
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../types/supabase';
 
