@@ -1,0 +1,148 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🚀 Development Plan for AI-Powered CRM (MoSCoW + Phased Task Breakdown)
+
+> Objective: Complete v1 of the CRM app with Deal Coach AI, Persona Builder, Objection Handler, and Win-Loss Explainer using atomic tasks.
+
+---
+
+## ✅ MoSCoW Prioritization Definitions
+
+- **Must Have**: Critical for v1 to work  
+- **Should Have**: Important, but not vital for initial release  
+- **Could Have**: Nice to include, but not needed for v1  
+- **Won’t Have (Now)**: Out of scope for v1  
+
+---
+
+## Add green tick symbol when the task is completed in 'todo.md' file
+
+## 🧩 Phase 1: Project Initialization & Environment Setup
+
+### Must Have  
+1. ✅ Setup Git repo and branching strategy  
+2. ✅ Setup monorepo structure (frontend + backend)  
+3. ✅ Setup backend framework (FastAPI or Node.js with Express)  
+4. ✅ Setup frontend framework (Next.js with TailwindCSS)  
+5. ✅ Install and configure Supabase project (hosted DB + Auth + Storage)  
+6. ✅ Setup .env configuration and secrets manager (Supabase keys etc.)  
+7. ✅ Setup linting, formatting, type-checking (e.g., ESLint, Prettier, TypeScript)  
+8. ✅ Setup CI/CD pipeline (GitHub Actions or Vercel + Railway)  
+
+### Should Have  
+9. Setup error logging (Sentry)  
+10. Setup API documentation tooling (Swagger for FastAPI / Postman collection)  
+
+---
+
+## 🗃️ Phase 2: Backend Infrastructure and Schema
+
+### Must Have  
+1. ✅ Design and implement Supabase database schema (contacts, deals, activities, objections, users, roles, pipelines) via SQL migrations or Supabase Studio  
+2. ✅ Implement user authentication using Supabase Auth (OAuth2 + email login + social providers)  
+3. ✅ Implement role-based access control (Admin, Manager, Rep) via Supabase Row-Level Security policies  
+4. ✅ Implement REST/GraphQL APIs for:  
+   - Contacts (CRUD)  
+   - Deals (CRUD)  
+   - Pipelines and Stages  
+   - Activities (emails, calls, meetings)  
+5. ✅ Add basic pagination, filtering, and sorting logic  
+6. ✅ Setup API versioning and rate limiting  
+
+### Should Have  
+7. Create unit tests for critical backend logic  
+8. Seed Supabase database with sample records for testing  
+
+---
+
+## 💻 Phase 3: Frontend Foundation
+
+### Must Have  
+1. ✅ Setup global layout (Sidebar, Header, Content Area)  
+2. ✅ Implement authentication screens (Login, Logout, AuthGuard) using Supabase client SDK  
+3. ✅ Build Contacts page  
+   - List view with filters, tags, search  
+   - Add/edit/view contact modal  
+4. ✅ Build Deals page  
+   - Kanban view for pipelines  
+   - Deal detail view with tabs (Overview, Timeline, Objections)  
+5. ✅ Implement full activity tracking UI (email, calls, meetings)  
+
+### Should Have  
+6. Responsive design for tablet/mobile  
+7. Loading/skeleton UI components  
+
+---
+
+## 🧠 Phase 4: AI Core Feature Integration
+
+### Must Have  
+1. ✅ Integrate AI prompt endpoint for:  
+   - Deal Coach AI  
+   - Persona Builder  
+   - Objection Handler  
+   - Win-Loss Explainer  
+2. ✅ Create prompt templates for each AI feature  
+3. ✅ Build AI Sidebar component in deal view  
+4. ✅ Implement UI for persona display (traits, tone, behavior)  
+5. ✅ Add objection input form + generated responses with rationale  
+6. ✅ Implement win/loss report generator view  
+
+### Should Have  
+7. Allow saving AI output as notes  
+8. AI auto-trigger on inactivity detection  
+
+---
+
+## 📈 Phase 5: Reporting, Admin & Settings
+
+### Must Have  
+1. ✅ Build Admin panel:  
+   - User management (invite, assign role, deactivate)  
+   - Pipeline configuration (edit stages)  
+   - Integration settings (email sync, LinkedIn)  
+2. ✅ Create basic reporting dashboard:  
+   - Win/Loss breakdown  
+   - Deal status over time  
+   - Rep performance  
+
+### Should Have  
+3. Export functionality (PDF, CSV for reports)  
+4. Weekly AI summary email setup  
+
+---
+
+## 🧪 Phase 6: Testing & QA
+
+### Must Have  
+1. ✅ Write integration tests (auth, deal flow, contact creation)  
+2. ✅ Write frontend component tests (Jest + Testing Library)  
+3. ✅ Perform end-to-end testing with real data (Playwright/Cypress)  
+4. ✅ Fix critical bugs from QA review  
+
+### Should Have  
+5. Add snapshot tests for regression  
+6. Browser + device compatibility testing  
+
+---
+
+## 🚀 Phase 7: Deployment & Handoff
+
+### Must Have  
+1. ✅ Setup production backend on Railway/Render with Supabase connection  
+2. ✅ Setup production frontend on Vercel  
+3. ✅ Connect domain and SSL cert  
+4. ✅ Final production database migration (Supabase managed)  
+5. ✅ Prepare developer handoff docs (API ref, env setup, testing guide)  
+
+---
+
+## ✅ By the End of Phase 7 (v1 Milestone), the App Can:  
+- ✅ Manage users, deals, contacts, pipelines, activities  
+- ✅ Use AI to coach deals, build personas, resolve objections, explain outcomes  
+- ✅ Track all sales activity with full access control  
+- ✅ Provide a beautiful, minimalist, glassmorphic UI  
+- ✅ Export data and monitor team performance  

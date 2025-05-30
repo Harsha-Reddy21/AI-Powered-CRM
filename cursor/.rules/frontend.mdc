@@ -1,0 +1,124 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Frontend Design System Documentation for AI-Powered CRM Landing Page
+
+---
+
+## 1. Spacing System
+
+- **Base Unit:** 8px  
+- **Scale:** Multiples of 8px for consistent spacing and rhythm throughout the UI.  
+- **Examples:**  
+  - Small gaps: 8px  
+  - Medium gaps: 16px  
+  - Section padding: 40px to 64px  
+  - Large spacing between major sections: 80px or more  
+- **Vertical Rhythm:**  
+  - Headings margin-bottom: 24px (3 × 8px)  
+  - Paragraph spacing: 16px (2 × 8px)  
+- **Grid System:**  
+  - 12-column responsive grid  
+  - Gutters: 24px (3 × 8px)  
+
+---
+
+## 2. UI Patterns
+
+### Navigation
+- Transparent navigation bar with glass blur effect on scroll.  
+- Logo aligned left, menu items aligned right.  
+- Hamburger menu for mobile with smooth sliding drawer animation.
+
+### Hero Section
+- Large, bold headline with max-width container for readability.  
+- Primary and secondary CTA buttons side-by-side, spaced by 16px.  
+- Background includes subtle glassmorphic cards or blurred abstract shapes to add depth.
+
+### Cards
+- Glassmorphic style: semi-transparent background with blur and subtle border (see Glassmorphism section).  
+- Padding inside cards: 24px.  
+- Rounded corners with 16px radius.  
+- Hover effect: subtle shadow increase and scale-up to 1.05x for feedback.
+
+### Buttons
+- **Primary Button:** Solid blue (#3B82F6) background with white text, border-radius 12px.  
+- **Secondary Button:** Transparent background with blue border and text (#3B82F6). On hover, background changes to a subtle blue tint.  
+- **Disabled State:** Reduced opacity and no pointer events.
+
+### Forms & Inputs
+- Minimalistic style with border or bottom-only border.  
+- Placeholder text color: light gray (#E5E7EB).  
+- Focus state uses a blue glow or border highlight consistent with primary brand color.  
+- Rounded corners consistent with card radius (12-16px).
+
+### Modals / Overlays
+- Centered modal dialog with a semi-transparent glassmorphic background overlay.  
+- Smooth fade and scale animations on open/close.
+
+---
+
+## 3. Icons
+
+- Style: Line icons with stroke width approximately 1.5-2px for clarity and minimalism.  
+- Colors: White or accent cyan (#22D3EE) depending on context.  
+- Usage: Icons accompany headings, feature cards, buttons (optional), and status indicators.  
+- Recommended Icon Libraries:  
+  - @Heroicons — MIT licensed, compatible with Tailwind CSS  
+  - @Feather Icons — simple, open-source icons
+
+---
+
+## 4. Design References
+
+- Primary Design Inspiration:  
+  - @Misogiai — for glassmorphism style, minimalist layout, and typography.
+
+- Glassmorphism Resources:  
+  - @Glassmorphism Generator — to generate CSS for glass effect backgrounds.
+
+- Additional UI Inspiration:  
+  - @Apple Music Web Player — clean, modern gradients and spacing.  
+  - @Stripe — minimalistic, clear UI patterns and spacing system.  
+  - @Figma Dashboard Templates — examples of clean card layouts and grids.  
+  - @Tailwind UI — ready-to-use modern components built with Tailwind CSS.
+
+---
+
+## 5. Color Palette
+
+| Role               | Color                         | Usage                              |
+|--------------------|-------------------------------|-----------------------------------|
+| Primary Blue       | `#3B82F6`                     | Buttons, CTAs, highlights         |
+| Primary White      | `#FFFFFF`                     | Backgrounds, text                 |
+| Soft Frosted Blue  | `rgba(255, 255, 255, 0.15)`  | Glassmorphic card backgrounds     |
+| Light Gray Text    | `#E5E7EB`                    | Secondary text                    |
+| Accent Cyan        | `#22D3EE`                    | Hover states, icon highlights     |
+| Dark Gray          | `#1F2937`                    | Headers, footers, high contrast text |
+
+---
+
+## 6. Typography
+
+| Role            | Font Family           | Usage                             |
+|-----------------|----------------------|----------------------------------|
+| Primary Font    | Inter (Sans-serif)    | Headings, body text, buttons     |
+| Secondary Font  | IBM Plex Mono (Monospace) | Captions, tags, code snippets     |
+
+- Fonts should be loaded via Google Fonts or locally for performance.
+
+---
+
+## 7. Glassmorphism CSS Example
+
+```css
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}

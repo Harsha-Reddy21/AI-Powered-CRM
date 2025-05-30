@@ -1,0 +1,284 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 📦 Backend Architecture Documentation for AI-Powered CRM
+
+## 📌 Overview
+
+This backend powers a CRM platform designed to manage contacts, companies, deals, activities, and AI-enhanced analytics. The system follows best practices for modularity, security, scalability, and developer experience. All business logic, data integrity, and AI integrations are governed by this architecture.
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer            | Technology                        |
+|------------------|---------------------------------|
+| Framework        | NestJS (TypeScript)              |
+| AI Services      | FastAPI (Python)                 |
+| Database         | Supabase (PostgreSQL-based backend with realtime and auth) |
+| Vector Search DB | Pinecone or Weaviate             |
+| Cache / Queue    | Redis                           |
+| ORM              | TypeORM (for NestJS)            |
+| API Type         | REST + GraphQL                  |
+| Docs             | Swagger/OpenAPI                 |
+| Auth             | JWT + OAuth2 (Google/Microsoft) |
+| Storage          | AWS S3 (files, email attachments) |
+| Deployment       | Docker, optional Kubernetes     |
+
+---
+
+## 🔐 Authentication & Authorization
+
+### 🔑 Authentication
+
+- Primary: JWT for authenticated requests  
+- Secondary: OAuth 2.0 for Gmail/Outlook integration  
+- Tokens:  
+  - Access Token (15min expiry)  
+  - Refresh Token (7-day expiry)  
+- Optional: Supabase Auth or Auth0 as managed solutions  
+
+### 🔒 Authorization
+
+- Role-Based Access Control (RBAC)  
+- Roles: Admin, Manager, SalesRep, Custom  
+- Object-level permissions via ownership and shared access  
+- Tenant-based data isolation (multi-tenant optional)  
+
+---
+
+## 🧩 Core Schema Design (Supabase)
+
+### Users
+- id (UUID) Primary Key  
+- name (TEXT)  
+- email (TEXT, UNIQUE)  
+- role (ENUM: admin, manager, rep)  
+- password_hash (TEXT)  
+- refresh_token_hash (TEXT)  
+- created_at (TIMESTAMP)  
+
+### Accounts (Companies)
+- id (UUID) Primary Key  
+- name (TEXT)  
+- domain (TEXT)  
+- industry (TEXT)  
+- owner_id (UUID → Users.id)  
+- created_at (TIMESTAMP)  
+
+### Contacts
+- id (UUID) Primary Key  
+- name (TEXT)  
+- email (TEXT)  
+- phone (TEXT)  
+- role (TEXT)  
+- notes (TEXT)  
+- tags (TEXT array)  
+- account_id (UUID → Accounts.id)  
+- owner_id (UUID → Users.id)  
+- created_at (TIMESTAMP)  
+
+### Deals
+- id (UUID) Primary Key  
+- name (TEXT)  
+- value (NUMERIC)  
+- stage_id (UUID → Stages.id)  
+- pipeline_id (UUID → Pipelines.id)  
+- expected_close_date (DATE)  
+- contact_id (UUID → Contacts.id)  
+- owner_id (UUID → Users.id)  
+- status (ENUM: open, won, lost)  
+- created_at (TIMESTAMP)  
+
+### Activities
+- id (UUID) Primary Key  
+- type (ENUM: email, call, note, meeting)  
+- content (TEXT)  
+- timestamp (TIMESTAMP)  
+- user_id (UUID → Users.id)  
+- contact_id (UUID → Contacts.id)  
+- deal_id (UUID → Deals.id)  
+
+### Pipelines
+- id (UUID) Primary Key  
+- name (TEXT)  
+- created_by (UUID → Users.id)  
+
+### Stages
+- id (UUID) Primary Key  
+- name (TEXT)  
+- pipeline_id (UUID → Pipelines.id)  
+- order (INTEGER)  
+
+### StageHistory
+- id (UUID) Primary Key  
+- deal_id (UUID → Deals.id)  
+- stage_id (UUID → Stages.id)  
+- entered_at (TIMESTAMP)  
+- exited_at (TIMESTAMP)  
+
+### AIInsights
+- id (UUID) Primary Key  
+- related_id (UUID → Deals or Contacts.id)  
+- type (ENUM: persona, objection, deal_coach, win_loss)  
+- content (JSONB)  
+- source_data (JSONB)  
+- confidence_score (NUMERIC)  
+- generated_at (TIMESTAMP)  
+
+### Objections
+- id (UUID) Primary Key  
+- deal_id (UUID → Deals.id)  
+- contact_id (UUID → Contacts.id)  
+- objection_text (TEXT)  
+- resolved (BOOLEAN)  
+- response_id (UUID → SuggestedResponses.id)  
+- created_at (TIMESTAMP)  
+
+### SuggestedResponses
+- id (UUID) Primary Key  
+- objection_id (UUID → Objections.id)  
+- response_text (TEXT)  
+- source (ENUM: library, AI)  
+- effectiveness_score (NUMERIC)  
+- created_at (TIMESTAMP)  
+
+---
+
+## 🔌 Integrations
+
+### Gmail / Outlook
+- Sync via OAuth2  
+- Auto-log email activities  
+- Attachments saved to AWS S3  
+- Periodic polling or webhook-based updates  
+
+### LinkedIn (optional)
+- Pull user profile from LinkedIn URL (via scraper or API)  
+- Used for persona generation  
+
+### OpenAI
+- Used in all AI modules (Deal Coach, Persona, Objection, Win-Loss)  
+- API key securely stored via environment variables or secrets manager  
+
+### Pinecone / Weaviate
+- Stores vector embeddings for semantic search  
+- Used in persona generation and objection handling  
+
+### Zapier / Webhooks
+- Expose webhooks for external integrations  
+- Example: Trigger Slack notification when a deal is marked "Won"  
+
+---
+
+## 📡 API Design
+
+- Base URL: /api/v1/  
+- Versioning included in URL  
+- JSON input/output  
+- Bearer token (JWT) authentication required  
+
+### GraphQL API (Optional)
+- Endpoint: /graphql  
+- For custom UI queries and reporting  
+- Query complexity limiting implemented  
+
+### Swagger (OpenAPI 3)
+- Auto-generated from NestJS decorators  
+- Available at /api/docs  
+
+### Sample API routes:
+- GET /api/v1/users/:id  
+- POST /api/v1/deals  
+- PUT /api/v1/deals/:id/stage  
+- GET /api/v1/deals/:id/coach  
+- POST /api/v1/objection/respond  
+- GET /api/v1/persona/:contact_id  
+
+---
+
+## 🛡 Security
+
+- HTTPS only  
+- JWT validation and rotation  
+- CORS restricted to allowed frontend origins  
+- SQL injection protection via ORM  
+- Sensitive data encrypted (tokens, secrets)  
+- Rate limiting via NestJS throttler  
+- Audit logs for critical actions (deletions, role changes)  
+- AI Safe Mode tracks hallucination probability, user override available  
+- Secrets management: .env for local, AWS Secrets Manager or Vault for production  
+
+---
+
+## 📁 Directory Structure (NestJS)
+
+src/  
+- auth/                # JWT, OAuth2, guards  
+- users/               # User CRUD and roles  
+- contacts/            # Contact logic  
+- accounts/            # Company-level contacts  
+- deals/               # Pipelines, deals, stages  
+- activities/          # Emails, meetings, notes  
+- ai/  
+  - persona/  
+  - deal-coach/  
+  - objection-handler/  
+  - win-loss/  
+- integrations/  
+  - gmail/  
+  - outlook/  
+  - openai/  
+- vector-db/           # Pinecone/Weaviate client  
+- shared/              # Common interfaces, DTOs  
+- main.ts              # Entry point  
+
+---
+
+## 📄 Developer Documentation Outline
+
+docs/  
+- setup-guide.md            # Local dev setup instructions  
+- api/  
+  - swagger.yaml  
+  - contacts.md  
+  - deals.md  
+- auth.md                   # Auth flows and token usage  
+- ai/  
+  - persona-builder.md  
+  - deal-coach.md  
+  - objection-handler.md  
+  - win-loss-explainer.md  
+- db/  
+  - schema-diagram.png  
+- integrations/  
+  - gmail.md  
+  - outlook.md  
+  - zapier.md  
+- deployment.md             # Docker and cloud deployment instructions  
+- security.md               # Threat models and mitigation strategies  
+
+---
+
+## 🚀 DevOps & Deployment (Optional)
+
+- Dockerized microservices for API, AI, Supabase, Redis  
+- Kubernetes manifests for scaling  
+- CI/CD pipelines (GitHub Actions / GitLab CI)  
+- Multi-environment deployment: Dev → QA → Production  
+
+---
+
+## ✅ MVP Delivery Scope
+
+- User management with roles and permissions  
+- Contacts, Accounts (Companies), Deals, and Activities management  
+- Multiple customizable pipelines & kanban view  
+- Gmail/Outlook sync with auto-logging  
+- AI-powered Deal Coach, Persona Builder, Objection Handler  
+- Win-Loss analysis (phase 2)  
+- Complete Swagger API documentation and RBAC setup  
+
+---

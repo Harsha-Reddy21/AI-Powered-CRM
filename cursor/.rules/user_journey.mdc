@@ -1,0 +1,279 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🧭 AI-Powered CRM – User Journey & Screen-Level Specification
+
+## Overview
+
+This document provides a complete, end-to-end user journey, including detailed specifications for each screen, user actions, system responses, and AI-driven behaviors. This should be used by the coding agent to develop the frontend and backend with precision and without hallucinations.
+
+---
+
+## 👥 User Roles
+
+| Role         | Description |
+|--------------|-------------|
+| **Admin**      | Manages organization, users, settings, pipelines, permissions. |
+| **Sales Manager** | Oversees team activity, reviews reports, sets goals. |
+| **Sales Rep**  | Handles contacts, deals, daily sales work. |
+| **AI Assistant** | Embedded logic layer that offers suggestions, automation, reports. |
+
+---
+
+## 🔄 Application Flow: Phase by Phase
+
+---
+
+### 🟣 Phase 1: Onboarding & Setup
+
+#### 📍 Screens:
+1. **Login/Signup Page**
+   - Fields:
+     - Email
+     - Password / Google / Microsoft SSO
+   - Actions:
+     - Sign in
+     - Create Account
+   - Design:
+     - Minimalist, centered layout
+     - Primary CTA button: “Continue with Google” or “Create Account”
+
+2. **Organization Setup Wizard**
+   - Steps:
+     - Step 1: Create Org (Org Name, Logo [optional])
+     - Step 2: Select pipelines (Sales, Renewals, Custom)
+     - Step 3: Define deal stages (drag-and-drop builder)
+     - Step 4: Invite team members (email + role)
+     - Step 5: Connect Gmail/Outlook
+     - Step 6: Import CSV
+   - Features:
+     - Progress tracker at top
+     - Help tooltips for each step
+     - AI suggestions: Recommended pipeline stages
+
+3. **Dashboard First-Time View**
+   - Empty state with prompts:
+     - “Add your first contact”
+     - “Import existing deals”
+     - “Connect email”
+     - “Try our AI Deal Coach”
+
+---
+
+### 🟢 Phase 2: Contact & Deal Management
+
+#### 📍 Screens:
+1. **Contact List View**
+   - Columns:
+     - Name
+     - Company
+     - Email
+     - Phone
+     - Tags
+     - Owner
+     - Last Interaction
+   - Actions:
+     - Add Contact
+     - Filter/Sort/Search
+     - Import/Export
+     - Sync Contacts
+   - Features:
+     - Bulk actions (assign owner, delete)
+     - AI Enrichment Badge (glow effect on enriched records)
+
+2. **Contact Detail View**
+   - Tabs:
+     - Overview
+     - Emails
+     - Notes
+     - Tasks
+     - Timeline
+   - Sections:
+     - Left panel: Contact info, persona, tags
+     - Right panel: Activity timeline
+   - AI Features:
+     - Persona Builder (auto-generated profile)
+     - Engagement score
+     - Suggested next touchpoint
+
+3. **Deal List View**
+   - View Modes: Table & Kanban
+   - Columns:
+     - Deal Name
+     - Value
+     - Stage
+     - Owner
+     - Close Date
+     - Status (Open/Won/Lost)
+   - Actions:
+     - Add Deal
+     - Move deals across stages (kanban drag)
+     - Filter by pipeline, value, close date
+
+4. **Deal Detail View**
+   - Header:
+     - Deal Name, Value, Stage, Owner, Close Date
+   - Sections:
+     - Contact(s) involved
+     - Notes/Comments
+     - Email threads
+     - Tasks
+     - Objection Log
+   - AI Features:
+     - Deal Coach (show “Next Best Action” box)
+     - Status warnings (e.g., "stuck in stage for 14 days")
+     - Persona insights for each stakeholder
+
+---
+
+### 🔵 Phase 3: Sales Pipeline Execution
+
+#### 📍 Screens:
+1. **Pipeline Dashboard**
+   - Tabbed by pipeline name
+   - Each tab:
+     - Stage columns (e.g., Prospecting → Demo → Proposal → Closed)
+     - Deal cards with:
+       - Deal name
+       - Value
+       - Close date
+       - Status indicator (green/yellow/red)
+   - Actions:
+     - Drag cards across stages
+     - Open card to view deal details
+   - AI Elements:
+     - Cards with AI icon show deal suggestions
+     - "Cold" warning tags for inactive deals
+
+---
+
+### 🟡 Phase 4: AI Coaching & Persona Intelligence
+
+#### 📍 Screens:
+1. **AI Sidebar (within Deal Detail View)**
+   - Section: “AI Deal Coach”
+     - Suggested actions
+     - Insights from past similar deals
+     - Follow-up timing recommendations
+   - Section: “Customer Persona”
+     - Auto-generated profile:
+       - Buyer Type
+       - Preferred Communication
+       - Interests
+       - Engagement Summary
+     - Sources used:
+       - Emails
+       - LinkedIn
+       - Meeting notes
+       - CRM fields
+
+2. **Objection Handling View**
+   - Action: Paste customer objection into field
+   - Response:
+     - Suggested answers
+     - Why it works (rationale)
+     - Link to related templates
+   - Additional:
+     - Drop-down to log if response resolved objection
+     - Feedback button: “Was this helpful?”
+
+---
+
+### 🔴 Phase 5: Win-Loss Analysis
+
+#### 📍 Screens:
+1. **Close Deal Modal**
+   - Options:
+     - Mark as Won
+     - Mark as Lost
+   - Required fields:
+     - Reason (dropdown)
+     - Notes (optional)
+     - Competitors involved
+     - Objection faced (if any)
+
+2. **Win/Loss Report Page**
+   - For each deal:
+     - Summary section
+     - Timeline of interactions
+     - AI-generated explanation:
+       - Key positive/negative signals
+       - Influence factors (pricing, timing, etc.)
+       - Competitor comparison (if any)
+   - Export as PDF/CSV
+
+3. **Team Overview Report**
+   - Charts:
+     - Win rate by stage
+     - Win rate by rep
+     - Common reasons for loss
+   - Filters:
+     - Time range
+     - Pipeline
+     - Stage
+
+---
+
+### 🟠 Phase 6: Engagement & Optimization
+
+#### 📍 Screens:
+1. **Weekly Insights Email (auto-generated)**
+   - Sent by AI to each user
+   - Reps:
+     - Deals to prioritize
+     - Objections to follow up
+   - Managers:
+     - Pipeline health
+     - Trends across team
+
+2. **Admin Dashboard**
+   - User activity stats
+   - System configuration status
+   - Sync status for integrations
+   - AI Usage: Features used, persona accuracy feedback
+
+---
+
+## 🧠 AI Touchpoints Summary
+
+| Feature                     | Data Used                                 | Output Provided                         |
+|-----------------------------|--------------------------------------------|------------------------------------------|
+| Deal Coach AI               | Deal history, stage duration, emails       | Next steps, red flags, follow-up times   |
+| Persona Builder             | Emails, call transcripts, CRM data, LinkedIn | Profile: buyer type, communication, needs |
+| Objection Handler           | Objection text, persona, past objections   | Response suggestions, resolution status  |
+| Win-Loss Explainer          | All deal data, competitor info             | Structured report with key drivers       |
+| Suggested Content/Templates | Deal stage, persona, objection context     | Recommended templates/snippets           |
+
+---
+
+## 📂 Optional Enhancements
+
+- **Gamification**: Rep leaderboard for most deals closed.
+- **Reminders**: AI-generated task suggestions based on inactivity.
+- **Dark Mode**: Toggle for light/dark theme.
+- **Mobile App**: (If included, use same component structure via responsive layout).
+
+---
+
+## ✅ Acceptance Criteria (Per Screen)
+
+Every screen should include:
+- Minimalist, clean UI using spacing system defined in frontend doc.
+- Role-based visibility (e.g., Admin-only settings).
+- Support for keyboard navigation and accessibility labels.
+- Clear loading states (skeletons or spinners).
+- Optimistic UI for actions like “Move Deal” or “Add Note”.
+
+---
+
+This document should be used in conjunction with:
+
+- **@Frontend Design System**  
+- **@Backend Architecture Doc**  
+- **@API Specification**  
+- **@Database Schema**
+
+
+

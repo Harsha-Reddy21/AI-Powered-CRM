@@ -1,0 +1,179 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 📝 Product Requirements Document (PRD)
+**Product Name:** AI-Powered CRM  
+**Owner:** [Your Name]  
+**Version:** 1.0  
+**Date:** May 30, 2025  
+
+---
+
+## 1. Product Overview
+
+This is a modern CRM platform designed to manage contacts, companies, deals, and activities—supercharged with AI-powered features that enhance productivity and deal outcomes. The system mirrors Salesforce CRM’s foundational structure for familiarity, extensibility, and enterprise readiness.
+
+---
+
+## 2. Core Modules & Features
+
+### 2.1 Contacts & Accounts
+
+- **Entity Types:** Support both *Contacts* and *Accounts* (Companies), following Salesforce CRM's model.
+- **Fields:**
+  - Standard: Full Name, Email, Phone, Role/Title, Company, Address, Notes, Tags  
+  - Custom Fields: User-defined (text, dropdown, date, boolean)
+- **Features:**
+  - Tagging and Segmentation  
+  - CSV Import/Export  
+  - Gmail and Outlook Sync  
+  - Merge Duplicates
+
+### 2.2 Deals / Opportunities
+
+- **Structure:**
+  - Support multiple pipelines (e.g., New Business, Renewals)  
+  - Customizable stages per pipeline  
+  - Kanban-style visual deal board
+- **Fields:**
+  - Deal Name, Value, Stage, Owner, Source, Close Date, Priority, Related Contacts/Accounts, Notes
+
+### 2.3 Activity Tracking
+
+- **Trackable Activities:** Emails, Calls, Meetings, Notes, Tasks, Follow-Ups
+- **Logging:**
+  - Manual logging via activity composer  
+  - Auto-logging from synced email/calendar tools
+- **Timeline View:** Chronological view of all activities tied to contact/account/deal
+
+### 2.4 User Management
+
+- **Roles:** Admin, Sales Rep, Manager, Custom Roles (Salesforce-style)  
+- **Permissions:**
+  - Role-based and record-level access control  
+  - Configurable entity-level sharing rules
+
+---
+
+## 3. AI-Powered Add-ons
+
+### 3.1 Deal Coach AI
+
+- **Purpose:** Provide AI-generated actionable recommendations to improve win probability.  
+- **Analyzed Data:**
+  - Stage progression history  
+  - Time-in-stage analysis  
+  - Rep performance metrics  
+  - Contact engagement  
+  - Similar past deals  
+- **Output:**
+  - Next-step suggestions  
+  - Recommended email templates or collateral  
+  - Risk Flags (e.g., deal stagnation, low activity)
+
+### 3.2 Customer Persona Builder
+
+- **Purpose:** Automatically generate detailed lead profiles based on interactions.  
+- **Data Sources:**
+  - Emails, call transcripts, CRM fields, LinkedIn, behavioral data  
+- **Output Fields:**
+  - Buyer Type (e.g., Decision Maker, Influencer)  
+  - Communication Style (e.g., formal, casual)  
+  - Motivators and Concerns  
+  - Interests
+
+### 3.3 Objection Handler Recommender
+
+- **Purpose:** Help reps overcome objections effectively.  
+- **Functionality:**
+  - Paste objection → Get AI-suggested responses  
+  - Use predefined objection-response library  
+  - Option to generate new response from scratch  
+- **Features:**
+  - Tracks outcome (Resolved/Unresolved)  
+  - Learns from success data
+
+### 3.4 Win-Loss Explainer
+
+- **Purpose:** Explain why deals are won or lost using data-driven insights.  
+- **Analyzed Data:**
+  - Notes, stage durations, competitor tags, engagement scores, persona match  
+- **Output:**
+  - Structured AI-generated report including:  
+    - Key winning/losing factors  
+    - Comparative metrics vs similar deals  
+    - Summary and confidence score
+
+---
+
+## 4. Integrations
+
+- **Email & Calendar:** Gmail, Outlook (OAuth)  
+- **LinkedIn:** Profile scraping/linking  
+- **Zapier / Webhooks:** External workflow automation  
+- **CSV Import/Export:** Bulk contact and deal management
+
+---
+
+## 5. UI/UX and Platform
+
+- **Platform:** Web-first, responsive for mobile  
+- **Tech Stack:** React, TailwindCSS, TypeScript  
+- **Design Features:**
+  - Modular UI components  
+  - Kanban views, dashboards, modal overlays  
+  - AI interaction cards and inline suggestions
+
+---
+
+## 6. Analytics & Reporting
+
+- **Dashboards:**
+  - Pipeline Overview  
+  - Deal Win/Loss Rates  
+  - Activity Metrics per Rep  
+  - AI Insight Summaries  
+- **Exports:**
+  - CSV and PDF reports  
+  - Shareable links
+
+---
+
+## 7. AI Safety & Hallucination Control
+
+- **Safe Mode Features:**
+  - Confidence-based flagging of low-certainty outputs  
+  - Traceability indicators (e.g., “Based on 5 emails and 2 calls”)  
+  - Optional human review suggestions
+
+---
+
+## 8. Technical Requirements
+
+- **Frontend:** React, TailwindCSS, TypeScript  
+- **Backend:** Node.js (Express), Python (AI services)  
+- **Database:** Supabase (PostgreSQL backend + Realtime + Auth)  
+- **AI Stack:** OpenAI API, LangChain, Pinecone (vector search)  
+- **Storage:** AWS S3 (documents, files)
+
+---
+
+## 9. MVP Scope
+
+- Core CRM: Contacts, Companies, Deals, Pipelines, Activities  
+- AI Modules: Deal Coach, Persona Builder, Objection Handler  
+- Gmail/Outlook Integration  
+- Role-based Access Control  
+- Admin Dashboard
+
+---
+
+## 10. Future Enhancements
+
+- Native Mobile App (iOS, Android)  
+- In-app Voice Call Tracking  
+- Slack/Teams Integrations  
+- AI-based Forecasting  
+- Marketing Attribution Models

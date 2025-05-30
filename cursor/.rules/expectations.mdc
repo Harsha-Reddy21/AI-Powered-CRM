@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 📌 Developer Guidance & Explicit Instructions for Coding Agent
+
+To ensure this project is developed **accurately, efficiently, and exactly as intended**, the following core principles **MUST be followed without exception**. These instructions are **non-negotiable** and any deviation must be cleared explicitly.
+
+---
+
+## 🔐 1. No Unapproved Assumptions – Always Confirm Before Acting
+
+> 🚫 Do **not** assume any feature behavior, UI flow, API structure, naming convention, or logic if not explicitly defined.
+
+- ✅ If a requirement or scenario is unclear, ambiguous, or unspecified, raise a question **immediately**.
+- 🗣️ Always initiate a discussion with the product owner before making **any guesswork or assumptions**.
+- ⛔ Making silent decisions based on “best practices” or past experience is **strictly prohibited** unless explicitly approved.
+
+---
+
+## ⚖️ 2. Multiple Options? Present Trade-Offs Before Proceeding
+
+> If you identify more than one way to implement a feature (e.g., tech stack, DB structure, API pattern, state management, caching, etc.), you **MUST**:
+
+- 📋 Present a concise comparison of each option with:
+  - Performance
+  - Scalability
+  - Developer complexity
+  - Maintainability
+- 🎯 Recommend the preferred approach **only after** explaining trade-offs.
+- 🛑 Wait for approval from the product owner before implementation.
+
+---
+
+## ❓ 3. Uncertain? Just Ask – No Unconfirmed Design or Architecture
+
+> At any point, if you are **unsure** about:
+
+- System architecture decisions
+- State management choices
+- Async patterns
+- Database modeling
+- Third-party tool usage
+- Security mechanisms
+- Role-based access rules
+
+✅ You must **ask for clarification first** — do **not** proceed based on assumptions or "industry defaults".
+
+---
+
+
+###Make sure to add green tick symbols once the task is done in `todo.md`
+## 🎨 4. Follow Design System & Backend Blueprint Religiously
+
+> The **frontend and backend specifications** provided must be followed **exactly as documented**.
+
+### Frontend
+- 🧩 Use only the components, color palette, typography, spacing system, and UI patterns defined in the @Frontend Design System.
+- ❄️ Respect the glassmorphism and minimalist design language.
+- 📐 Do not substitute with third-party templates or re-style components without approval.
+
+### Backend
+- 🗄️ Follow the database schema exactly.
+- 🔌 API endpoints, naming conventions, request/response structures, and error handling must **match** what’s defined in the @API Spec.
+- 🧪 Every endpoint must be testable via Postman or Swagger with example payloads and schema validation.
+- 🚦 Use the specified authentication & role-based access control mechanisms.
+
+---
+
+## 🛠️ Developer Checklist Before Submission
+
+Before submitting any feature for review, ensure:
+
+- ✅ You’ve confirmed unclear areas with the product owner.
+- ✅ You’ve reviewed your implementation against the provided specs.
+- ✅ You’re not introducing any undocumented behavior or UI logic.
+- ✅ You’ve followed naming conventions, component hierarchy, and file structure.
+- ✅ You’ve documented anything that may affect integration or extensibility.
+
+---
+
+By following the above mandates, you will **eliminate rework, misunderstandings, and feature drift**—ensuring smooth progress and high-quality delivery.
+
+
+
